@@ -442,11 +442,11 @@
             transition: all 0.2s ease;
             font-weight: 600;
             touch-action: manipulation;
+            background: #e5e7eb;
+            color: #1a1a2e;
         }
 
-        .player-btn:active { transform: scale(0.98); }
-
-        /* player-btn colors set dynamically via JS */
+        .player-btn:active { transform: scale(0.98); background: #d1d5db; }
 
         .round-info {
             background: linear-gradient(135deg, #3b82f6, #2563eb);
@@ -1154,10 +1154,9 @@
 
         function renderPlayerButtons() {
             const container = document.getElementById('playerButtons');
-            container.innerHTML = players.map((p, i) => {
-                const c = availableColors[p.color].colors;
-                return `<button class="player-btn" style="background:linear-gradient(135deg,${c[0]},${c[1]}); color:white;" onclick="showCard(${i})">${p.emoji} ${p.name}</button>`;
-            }).join('');
+            container.innerHTML = players.map((p, i) =>
+                `<button class="player-btn" onclick="showCard(${i})">${p.emoji} ${p.name}</button>`
+            ).join('');
         }
 
         // Categories
