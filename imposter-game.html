@@ -569,6 +569,24 @@
 
         .close-btn:active { background: #4b5563; }
 
+        /* Starter button */
+        .starter-btn {
+            background: linear-gradient(135deg, #8b5cf6, #6d28d9);
+            color: white;
+            padding: 14px 30px;
+            font-size: 1.1em;
+            border: none;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 600;
+            margin-top: 12px;
+            touch-action: manipulation;
+            width: 100%;
+        }
+
+        .starter-btn:active { transform: scale(0.98); }
+
         /* Reveal button */
         .reveal-btn {
             background: linear-gradient(135deg, #ef4444, #dc2626);
@@ -736,6 +754,7 @@
             <div class="round-info" id="roundInfo">Ronde 1</div>
             <div class="player-buttons" id="playerButtons"></div>
             <div class="status" id="status">Nog niemand heeft gekeken</div>
+            <button class="starter-btn" id="starterBtn" style="display:none;" onclick="pickStarter()">🎲 Wie begint er?</button>
             <button class="reveal-btn" onclick="revealImposter()">🔍 Wie is de Imposter?</button>
             <button class="new-game-btn" onclick="newGame()">🎲 Nieuwe Ronde</button>
             <button class="settings-btn" onclick="backToSetup()">⚙️ Opnieuw instellen</button>
@@ -1299,10 +1318,13 @@
 
         function updateStatus() {
             const status = document.getElementById('status');
+            const starterBtn = document.getElementById('starterBtn');
             const names = players.map(p => p.name);
+            const allChecked = checkedPlayers.length === players.length;
+
             if (checkedPlayers.length === 0) {
                 status.innerHTML = "Nog niemand heeft gekeken";
-            } else if (checkedPlayers.length === players.length) {
+            } else if (allChecked) {
                 status.innerHTML = "✅ Iedereen heeft gekeken!<br><strong>Tijd om te discussiëren!</strong>";
             } else {
                 const checked = checkedPlayers.map(n => {
@@ -1312,6 +1334,17 @@
                 const remaining = players.filter(p => !checkedPlayers.includes(p.name)).map(p => `${p.emoji} ${p.name}`).join(", ");
                 status.innerHTML = `Gekeken: ${checked}<br>Nog niet: ${remaining}`;
             }
+
+            // Toon "Wie begint er?" knop alleen als iedereen heeft gekeken
+            starterBtn.style.display = allChecked ? 'block' : 'none';
+        }
+
+        function pickStarter() {
+            const randomIndex = Math.floor(Math.random() * players.length);
+            const starter = players[randomIndex];
+            const btn = document.getElementById('starterBtn');
+            btn.textContent = `👉 ${starter.emoji} ${starter.name} begint!`;
+            btn.style.background = `linear-gradient(135deg, ${availableColors[starter.color].colors[0]}, ${availableColors[starter.color].colors[1]})`;
         }
 
         function revealImposter() {
