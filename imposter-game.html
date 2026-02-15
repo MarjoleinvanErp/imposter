@@ -429,6 +429,61 @@
 
         .close-btn:active { background: #4b5563; }
 
+        /* Reveal button */
+        .reveal-btn {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+            padding: 14px 30px;
+            font-size: 1.1em;
+            border: none;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 600;
+            margin-top: 12px;
+            touch-action: manipulation;
+            width: 100%;
+        }
+
+        .reveal-btn:active { transform: scale(0.98); }
+
+        /* Reveal screen */
+        .reveal-countdown {
+            font-size: 4em;
+            font-weight: 900;
+            color: #3b82f6;
+            animation: countPulse 0.6s ease;
+        }
+
+        @keyframes countPulse {
+            0% { transform: scale(0.3); opacity: 0; }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .reveal-name {
+            font-size: 1.8em;
+            font-weight: 900;
+            color: white;
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            padding: 20px 15px;
+            border-radius: 14px;
+            margin-bottom: 15px;
+            animation: revealPop 0.5s ease;
+        }
+
+        .reveal-word {
+            font-size: 0.95em;
+            color: #6b7280;
+            margin-bottom: 20px;
+        }
+
+        @keyframes revealPop {
+            0% { transform: scale(0); opacity: 0; }
+            60% { transform: scale(1.1); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
         /* Install banner */
         .install-banner {
             display: none;
@@ -540,6 +595,7 @@
             <div class="round-info" id="roundInfo">Ronde 1</div>
             <div class="player-buttons" id="playerButtons"></div>
             <div class="status" id="status">Nog niemand heeft gekeken</div>
+            <button class="reveal-btn" onclick="revealImposter()">🔍 Wie is de Imposter?</button>
             <button class="new-game-btn" onclick="newGame()">🎲 Nieuwe Ronde</button>
             <button class="settings-btn" onclick="backToSetup()">⚙️ Opnieuw instellen</button>
         </div>
@@ -550,6 +606,16 @@
             <h2 id="playerName">Speler</h2>
             <div class="card-content" id="cardContent">???</div>
             <button class="close-btn" onclick="closeCard()">Ik heb het gezien! ✓</button>
+        </div>
+    </div>
+
+    <div class="card-screen" id="revealScreen">
+        <div class="card">
+            <h2>🕵️ De Imposter is...</h2>
+            <div class="reveal-countdown" id="revealCountdown">3</div>
+            <div class="reveal-name" id="revealName" style="display:none;"></div>
+            <div class="reveal-word" id="revealWord" style="display:none;"></div>
+            <button class="close-btn" id="revealNextBtn" style="display:none;" onclick="revealNext()">🎲 Volgende Ronde</button>
         </div>
     </div>
 
@@ -983,6 +1049,46 @@
                 const remaining = players.filter(p => !checkedPlayers.includes(p)).join(", ");
                 status.innerHTML = `Gekeken: ${checked}<br>Nog niet: ${remaining}`;
             }
+        }
+
+        function revealImposter() {
+            const screen = document.getElementById('revealScreen');
+            const countdown = document.getElementById('revealCountdown');
+            const nameEl = document.getElementById('revealName');
+            const wordEl = document.getElementById('revealWord');
+            const nextBtn = document.getElementById('revealNextBtn');
+
+            // Reset
+            countdown.style.display = 'block';
+            nameEl.style.display = 'none';
+            wordEl.style.display = 'none';
+            nextBtn.style.display = 'none';
+            countdown.textContent = '3';
+            screen.style.display = 'flex';
+
+            let count = 3;
+            const timer = setInterval(() => {
+                count--;
+                if (count > 0) {
+                    countdown.textContent = count;
+                    countdown.style.animation = 'none';
+                    void countdown.offsetWidth;
+                    countdown.style.animation = 'countPulse 0.6s ease';
+                } else {
+                    clearInterval(timer);
+                    countdown.style.display = 'none';
+                    nameEl.textContent = imposter;
+                    nameEl.style.display = 'block';
+                    wordEl.textContent = `Het woord was: ${currentWord}`;
+                    wordEl.style.display = 'block';
+                    nextBtn.style.display = 'block';
+                }
+            }, 800);
+        }
+
+        function revealNext() {
+            document.getElementById('revealScreen').style.display = 'none';
+            newGame();
         }
 
         function newGame() {
