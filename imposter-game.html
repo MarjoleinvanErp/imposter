@@ -69,6 +69,216 @@
             font-size: 0.95em;
         }
 
+        /* Steps indicator */
+        .steps {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 18px;
+        }
+
+        .step-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #d1d5db;
+            transition: all 0.3s ease;
+        }
+
+        .step-dot.active {
+            background: #3b82f6;
+            transform: scale(1.3);
+        }
+
+        .step-dot.done {
+            background: #10b981;
+        }
+
+        /* Screen management */
+        .screen { display: none; }
+        .screen.active { display: block; }
+
+        /* Shared buttons */
+        .next-btn, .back-btn {
+            padding: 14px 30px;
+            font-size: 1.1em;
+            border: none;
+            border-radius: 14px;
+            cursor: pointer;
+            font-weight: 600;
+            touch-action: manipulation;
+            width: 100%;
+            transition: all 0.2s ease;
+        }
+
+        .next-btn:active, .back-btn:active {
+            transform: scale(0.98);
+        }
+
+        .next-btn {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+        }
+
+        .next-btn:disabled {
+            background: #d1d5db;
+            color: #9ca3af;
+            cursor: not-allowed;
+        }
+
+        .back-btn {
+            background: #e5e7eb;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+
+        .btn-row {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 15px;
+        }
+
+        /* ---- STEP 1: Players ---- */
+        .player-inputs {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            text-align: left;
+        }
+
+        .player-input-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .player-input-row .emoji {
+            font-size: 1.3em;
+            width: 30px;
+            text-align: center;
+        }
+
+        .player-input-row input {
+            flex: 1;
+            padding: 10px 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 1em;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .player-input-row input:focus {
+            border-color: #3b82f6;
+        }
+
+        .player-controls {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .control-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.85em;
+            font-weight: 600;
+            touch-action: manipulation;
+        }
+
+        .control-btn.add { background: #3b82f6; color: white; }
+        .control-btn.remove { background: #ef4444; color: white; }
+        .control-btn:disabled { background: #d1d5db; color: #9ca3af; cursor: not-allowed; }
+
+        /* ---- STEP 2: Categories ---- */
+        .category-search {
+            width: 100%;
+            padding: 10px 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 1em;
+            outline: none;
+            margin-bottom: 8px;
+            transition: border-color 0.2s;
+        }
+
+        .category-search:focus { border-color: #3b82f6; }
+        .category-search::placeholder { color: #9ca3af; }
+
+        .category-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px;
+            max-height: 300px;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            text-align: left;
+        }
+
+        .category-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px;
+            background: #f3f4f6;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.8em;
+        }
+
+        .category-item.hidden { display: none; }
+
+        .category-item input {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .category-item label {
+            cursor: pointer;
+            flex: 1;
+            line-height: 1.2;
+        }
+
+        .category-item .count {
+            color: #9ca3af;
+            font-size: 0.75em;
+        }
+
+        .select-buttons {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin-top: 10px;
+        }
+
+        .select-btn {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.85em;
+            touch-action: manipulation;
+        }
+
+        .select-btn:active { background: #2563eb; }
+        .select-btn.outline { background: white; color: #3b82f6; border: 2px solid #3b82f6; }
+
+        .word-count {
+            text-align: center;
+            margin-top: 8px;
+            color: #6b7280;
+            font-size: 0.85em;
+        }
+
+        /* ---- STEP 3: Game ---- */
         .player-buttons {
             display: flex;
             flex-direction: column;
@@ -87,9 +297,7 @@
             touch-action: manipulation;
         }
 
-        .player-btn:active {
-            transform: scale(0.98);
-        }
+        .player-btn:active { transform: scale(0.98); }
 
         .player-btn.p1 { background: linear-gradient(135deg, #ff6b6b, #ee5a5a); color: white; }
         .player-btn.p2 { background: linear-gradient(135deg, #4ecdc4, #44a08d); color: white; }
@@ -99,6 +307,17 @@
         .player-btn.p6 { background: linear-gradient(135deg, #ec4899, #db2777); color: white; }
         .player-btn.p7 { background: linear-gradient(135deg, #14b8a6, #0d9488); color: white; }
         .player-btn.p8 { background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: white; }
+
+        .round-info {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-bottom: 12px;
+            font-weight: 600;
+            font-size: 0.95em;
+        }
 
         .new-game-btn {
             background: linear-gradient(135deg, #f59e0b, #d97706);
@@ -115,10 +334,35 @@
             width: 100%;
         }
 
-        .new-game-btn:active {
-            transform: scale(0.98);
+        .new-game-btn:active { transform: scale(0.98); }
+
+        .settings-btn {
+            background: #e5e7eb;
+            border: none;
+            padding: 10px 14px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.2s ease;
+            touch-action: manipulation;
+            width: 100%;
+            margin-top: 8px;
         }
 
+        .settings-btn:active { background: #d1d5db; }
+
+        .status {
+            margin-top: 12px;
+            padding: 10px;
+            background: #f3f4f6;
+            border-radius: 10px;
+            color: #4b5563;
+            font-size: 0.9em;
+        }
+
+        .status .checked { color: #10b981; font-weight: bold; }
+
+        /* Card overlay */
         .card-screen {
             display: none;
             position: fixed;
@@ -185,239 +429,6 @@
 
         .close-btn:active { background: #4b5563; }
 
-        .status {
-            margin-top: 12px;
-            padding: 10px;
-            background: #f3f4f6;
-            border-radius: 10px;
-            color: #4b5563;
-            font-size: 0.9em;
-        }
-
-        .status .checked { color: #10b981; font-weight: bold; }
-
-        .round-info {
-            background: linear-gradient(135deg, #3b82f6, #2563eb);
-            color: white;
-            padding: 8px 16px;
-            border-radius: 20px;
-            display: inline-block;
-            margin-bottom: 12px;
-            font-weight: 600;
-            font-size: 0.95em;
-        }
-
-        /* Settings buttons row */
-        .settings-row {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 12px;
-        }
-
-        .settings-btn {
-            background: #e5e7eb;
-            border: none;
-            padding: 10px 14px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 0.9em;
-            transition: all 0.2s ease;
-            flex: 1;
-            touch-action: manipulation;
-        }
-
-        .settings-btn:active { background: #d1d5db; }
-
-        /* Panels */
-        .panel {
-            display: none;
-            background: #f9fafb;
-            border-radius: 14px;
-            padding: 12px;
-            margin-bottom: 15px;
-            text-align: left;
-        }
-
-        .panel.show { display: block; }
-
-        .panel h3 {
-            text-align: center;
-            margin-bottom: 10px;
-            color: #374151;
-            font-size: 1em;
-        }
-
-        /* Players panel */
-        .player-inputs {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .player-input-row {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .player-input-row .emoji {
-            font-size: 1.3em;
-            width: 30px;
-        }
-
-        .player-input-row input {
-            flex: 1;
-            padding: 10px 12px;
-            border: 2px solid #e5e7eb;
-            border-radius: 10px;
-            font-size: 1em;
-            outline: none;
-            transition: border-color 0.2s;
-        }
-
-        .player-input-row input:focus {
-            border-color: #3b82f6;
-        }
-
-        .save-btn {
-            background: #10b981;
-            color: white;
-            border: none;
-            padding: 12px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 1em;
-            font-weight: 600;
-            margin-top: 10px;
-            width: 100%;
-            touch-action: manipulation;
-        }
-
-        .save-btn:active { background: #059669; }
-
-        .player-controls {
-            display: flex;
-            gap: 8px;
-            margin-top: 10px;
-        }
-
-        .control-btn {
-            flex: 1;
-            padding: 10px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.85em;
-            font-weight: 600;
-            touch-action: manipulation;
-        }
-
-        .control-btn.add {
-            background: #3b82f6;
-            color: white;
-        }
-
-        .control-btn.remove {
-            background: #ef4444;
-            color: white;
-        }
-
-        .control-btn:disabled {
-            background: #d1d5db;
-            color: #9ca3af;
-            cursor: not-allowed;
-        }
-
-        /* Categories panel */
-        .category-search {
-            width: 100%;
-            padding: 10px 12px;
-            border: 2px solid #e5e7eb;
-            border-radius: 10px;
-            font-size: 1em;
-            outline: none;
-            margin-bottom: 8px;
-            transition: border-color 0.2s;
-        }
-
-        .category-search:focus {
-            border-color: #3b82f6;
-        }
-
-        .category-search::placeholder {
-            color: #9ca3af;
-        }
-
-        .category-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 6px;
-            max-height: 250px;
-            overflow-y: auto;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        .category-item {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            padding: 8px;
-            background: white;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.8em;
-        }
-
-        .category-item.hidden {
-            display: none;
-        }
-
-        .category-item input {
-            width: 18px;
-            height: 18px;
-            cursor: pointer;
-            flex-shrink: 0;
-        }
-
-        .category-item label {
-            cursor: pointer;
-            flex: 1;
-            line-height: 1.2;
-        }
-
-        .category-item .count {
-            color: #9ca3af;
-            font-size: 0.75em;
-        }
-
-        .select-buttons {
-            display: flex;
-            gap: 8px;
-            justify-content: center;
-            margin-top: 10px;
-        }
-
-        .select-btn {
-            background: #3b82f6;
-            color: white;
-            border: none;
-            padding: 8px 14px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.85em;
-            touch-action: manipulation;
-        }
-
-        .select-btn:active { background: #2563eb; }
-        .select-btn.outline { background: white; color: #3b82f6; border: 2px solid #3b82f6; }
-
-        .word-count {
-            text-align: center;
-            margin-top: 8px;
-            color: #6b7280;
-            font-size: 0.85em;
-        }
-
         /* Install banner */
         .install-banner {
             display: none;
@@ -465,11 +476,11 @@
             .container { padding: 15px 12px; }
             h1 { font-size: 1.5em; }
             .player-btn { padding: 14px 18px; font-size: 1.1em; }
-            .category-grid { max-height: 180px; }
+            .category-grid { max-height: 200px; }
         }
 
         @media (max-height: 600px) {
-            .category-grid { max-height: 140px; }
+            .category-grid { max-height: 150px; }
         }
 
         @media (display-mode: standalone) {
@@ -485,46 +496,53 @@
             <button id="installBtn">Installeren</button>
             <button class="dismiss" id="dismissInstall">✕</button>
         </div>
+
         <h1>🕵️ Imposter</h1>
         <p class="subtitle">Wie is de bedrieger?</p>
-        
-        <div class="round-info" id="roundInfo">Ronde 1</div>
 
-        <div class="settings-row">
-            <button class="settings-btn" onclick="togglePanel('playersPanel')">👥 Spelers</button>
-            <button class="settings-btn" onclick="togglePanel('categoriesPanel')">📂 Categorieën</button>
+        <div class="steps">
+            <div class="step-dot active" id="dot1"></div>
+            <div class="step-dot" id="dot2"></div>
+            <div class="step-dot" id="dot3"></div>
         </div>
 
-        <div class="panel" id="playersPanel">
-            <h3>Spelers (2-8)</h3>
-            <div class="player-inputs" id="playerInputs">
-                <!-- Generated by JS -->
-            </div>
+        <!-- STEP 1: Players -->
+        <div class="screen active" id="step1">
+            <h3 style="margin-bottom:12px; color:#374151;">👥 Wie doen er mee?</h3>
+            <div class="player-inputs" id="playerInputs"></div>
             <div class="player-controls">
-                <button class="control-btn add" onclick="addPlayer()">+ Speler toevoegen</button>
-                <button class="control-btn remove" onclick="removePlayer()">- Speler verwijderen</button>
+                <button class="control-btn add" onclick="addPlayer()">+ Toevoegen</button>
+                <button class="control-btn remove" onclick="removePlayer()">- Verwijderen</button>
             </div>
-            <button class="save-btn" onclick="savePlayers()">✓ Opslaan</button>
+            <div class="btn-row">
+                <button class="next-btn" onclick="goToStep(2)">Volgende →</button>
+            </div>
         </div>
-        
-        <div class="panel" id="categoriesPanel">
-            <h3>Kies categorieën</h3>
+
+        <!-- STEP 2: Categories -->
+        <div class="screen" id="step2">
+            <h3 style="margin-bottom:12px; color:#374151;">📂 Kies categorieën</h3>
             <input type="text" class="category-search" id="categorySearch" placeholder="🔍 Zoek categorie..." oninput="filterCategories()">
             <div class="category-grid" id="categoryGrid"></div>
             <div class="select-buttons">
                 <button class="select-btn" onclick="selectAll()">Alles aan</button>
                 <button class="select-btn outline" onclick="selectNone()">Alles uit</button>
             </div>
-            <div class="word-count" id="wordCount">1000 woorden</div>
+            <div class="word-count" id="wordCount">0 woorden</div>
+            <div class="btn-row">
+                <button class="back-btn" onclick="goToStep(1)">← Terug</button>
+                <button class="next-btn" id="startGameBtn" onclick="startGame()">🎲 Start het spel!</button>
+            </div>
         </div>
 
-        <div class="player-buttons" id="playerButtons">
-            <!-- Generated by JS -->
+        <!-- STEP 3: Game -->
+        <div class="screen" id="step3">
+            <div class="round-info" id="roundInfo">Ronde 1</div>
+            <div class="player-buttons" id="playerButtons"></div>
+            <div class="status" id="status">Nog niemand heeft gekeken</div>
+            <button class="new-game-btn" onclick="newGame()">🎲 Nieuwe Ronde</button>
+            <button class="settings-btn" onclick="backToSetup()">⚙️ Opnieuw instellen</button>
         </div>
-
-        <div class="status" id="status">Nog niemand heeft gekeken</div>
-
-        <button class="new-game-btn" onclick="newGame()">🎲 Nieuwe Ronde</button>
     </div>
 
     <div class="card-screen" id="cardScreen">
@@ -743,15 +761,15 @@
         let checkedPlayers = [];
         let round = 1;
         let activeCategories = [];
+        let currentStep = 1;
 
-        // Load saved players from localStorage
+        // Load saved players
         function loadPlayers() {
             const saved = localStorage.getItem('imposterPlayers');
             if (saved) {
                 players = JSON.parse(saved);
             }
             renderPlayerInputs();
-            renderPlayerButtons();
         }
 
         function renderPlayerInputs() {
@@ -792,23 +810,20 @@
                 return input ? (input.value.trim() || `Speler ${i + 1}`) : `Speler ${i + 1}`;
             });
             localStorage.setItem('imposterPlayers', JSON.stringify(players));
-            renderPlayerButtons();
-            togglePanel('playersPanel');
-            initGame();
         }
 
         function renderPlayerButtons() {
             const container = document.getElementById('playerButtons');
-            container.innerHTML = players.map((name, i) => 
+            container.innerHTML = players.map((name, i) =>
                 `<button class="player-btn p${i+1}" onclick="showCard('${name.replace(/'/g, "\\'")}')">${emojis[i]} ${name}</button>`
             ).join('');
         }
 
+        // Categories
         function initCategories() {
             const grid = document.getElementById('categoryGrid');
             grid.innerHTML = '';
 
-            // Load saved categories or default to none
             const savedCats = localStorage.getItem('imposterCategories');
             const enabledCats = savedCats ? JSON.parse(savedCats) : [];
 
@@ -843,19 +858,6 @@
             });
         }
 
-        function togglePanel(panelId) {
-            const panel = document.getElementById(panelId);
-            const isShowing = panel.classList.contains('show');
-            
-            // Close all panels
-            document.querySelectorAll('.panel').forEach(p => p.classList.remove('show'));
-            
-            // Toggle the clicked panel
-            if (!isShowing) {
-                panel.classList.add('show');
-            }
-        }
-
         function selectAll() {
             document.querySelectorAll('.category-item input').forEach(cb => cb.checked = true);
             updateWordCount();
@@ -880,6 +882,10 @@
 
             document.getElementById('wordCount').textContent = `${total} woorden`;
             localStorage.setItem('imposterCategories', JSON.stringify(activeCategories));
+
+            // Enable/disable start button
+            const btn = document.getElementById('startGameBtn');
+            if (btn) btn.disabled = total === 0;
         }
 
         function getActiveWords() {
@@ -890,24 +896,56 @@
             return words;
         }
 
-        function initGame() {
-            const words = getActiveWords();
-            if (words.length === 0) {
+        // Step navigation
+        function goToStep(step) {
+            // Save players when leaving step 1
+            if (currentStep === 1) {
+                savePlayers();
+            }
+
+            currentStep = step;
+
+            // Update screens
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(`step${step}`).classList.add('active');
+
+            // Update dots
+            for (let i = 1; i <= 3; i++) {
+                const dot = document.getElementById(`dot${i}`);
+                dot.classList.remove('active', 'done');
+                if (i < step) dot.classList.add('done');
+                if (i === step) dot.classList.add('active');
+            }
+        }
+
+        function startGame() {
+            if (activeCategories.length === 0) {
                 alert('Selecteer minimaal één categorie!');
                 return;
             }
+            savePlayers();
+            renderPlayerButtons();
+            round = 1;
+            document.getElementById('roundInfo').textContent = 'Ronde 1';
+            initRound();
+            goToStep(3);
+        }
+
+        function initRound() {
+            const words = getActiveWords();
+            if (words.length === 0) return;
             currentWord = words[Math.floor(Math.random() * words.length)];
             imposter = players[Math.floor(Math.random() * players.length)];
             checkedPlayers = [];
             updateStatus();
         }
 
+        function backToSetup() {
+            goToStep(1);
+        }
+
+        // Game
         function showCard(player) {
-            if (getActiveWords().length === 0) {
-                alert('Selecteer minimaal één categorie!');
-                return;
-            }
-            
             const cardScreen = document.getElementById('cardScreen');
             const playerNameEl = document.getElementById('playerName');
             const cardContent = document.getElementById('cardContent');
@@ -950,7 +988,7 @@
         function newGame() {
             round++;
             document.getElementById('roundInfo').textContent = `Ronde ${round}`;
-            initGame();
+            initRound();
         }
 
         // PWA: Service Worker registration
@@ -984,9 +1022,8 @@
         });
 
         // Start
-        initCategories();
         loadPlayers();
-        initGame();
+        initCategories();
     </script>
 </body>
 </html>
