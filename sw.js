@@ -1,4 +1,4 @@
-const CACHE_NAME = 'imposter-v6';
+const CACHE_NAME = 'imposter-v7';
 const ASSETS = [
   './',
   './imposter-game.html',
