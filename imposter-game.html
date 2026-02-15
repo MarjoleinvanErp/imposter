@@ -150,13 +150,40 @@
         .player-input-row {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
         }
 
-        .player-input-row .emoji {
+        .emoji-btn {
             font-size: 1.3em;
-            width: 30px;
-            text-align: center;
+            width: 38px;
+            height: 38px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            background: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            touch-action: manipulation;
+        }
+
+        .emoji-btn:active { background: #f3f4f6; }
+
+        .color-btn {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: 3px solid #e5e7eb;
+            cursor: pointer;
+            flex-shrink: 0;
+            touch-action: manipulation;
+            transition: border-color 0.2s, transform 0.2s;
+        }
+
+        .color-btn.selected {
+            border-color: #1a1a2e;
+            transform: scale(1.15);
         }
 
         .player-input-row input {
@@ -167,10 +194,69 @@
             font-size: 1em;
             outline: none;
             transition: border-color 0.2s;
+            min-width: 0;
         }
 
         .player-input-row input:focus {
             border-color: #3b82f6;
+        }
+
+        /* Emoji picker popup */
+        .emoji-picker-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.4);
+            z-index: 900;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .emoji-picker-overlay.show { display: flex; }
+
+        .emoji-picker {
+            background: white;
+            border-radius: 16px;
+            padding: 15px;
+            max-width: 320px;
+            width: 100%;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+
+        .emoji-picker h3 {
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 1em;
+            color: #374151;
+        }
+
+        .emoji-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 6px;
+        }
+
+        .emoji-option {
+            font-size: 1.5em;
+            padding: 8px;
+            border: none;
+            background: #f3f4f6;
+            border-radius: 10px;
+            cursor: pointer;
+            text-align: center;
+            touch-action: manipulation;
+        }
+
+        .emoji-option:active { background: #dbeafe; }
+
+        /* Color picker row */
+        .color-picker-row {
+            display: flex;
+            gap: 6px;
+            justify-content: center;
+            margin-top: 10px;
+            flex-wrap: wrap;
         }
 
         .player-controls {
@@ -299,14 +385,7 @@
 
         .player-btn:active { transform: scale(0.98); }
 
-        .player-btn.p1 { background: linear-gradient(135deg, #ff6b6b, #ee5a5a); color: white; }
-        .player-btn.p2 { background: linear-gradient(135deg, #4ecdc4, #44a08d); color: white; }
-        .player-btn.p3 { background: linear-gradient(135deg, #a855f7, #7c3aed); color: white; }
-        .player-btn.p4 { background: linear-gradient(135deg, #3b82f6, #2563eb); color: white; }
-        .player-btn.p5 { background: linear-gradient(135deg, #f59e0b, #d97706); color: white; }
-        .player-btn.p6 { background: linear-gradient(135deg, #ec4899, #db2777); color: white; }
-        .player-btn.p7 { background: linear-gradient(135deg, #14b8a6, #0d9488); color: white; }
-        .player-btn.p8 { background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: white; }
+        /* player-btn colors set dynamically via JS */
 
         .round-info {
             background: linear-gradient(135deg, #3b82f6, #2563eb);
@@ -619,6 +698,13 @@
         </div>
     </div>
 
+    <div class="emoji-picker-overlay" id="emojiPicker">
+        <div class="emoji-picker">
+            <h3>Kies een emoji</h3>
+            <div class="emoji-grid" id="emojiGrid"></div>
+        </div>
+    </div>
+
     <script>
         const wordCategories = {
             "🐾 Dieren": [
@@ -819,34 +905,102 @@
             ]
         };
 
-        const emojis = ["🎀", "🌸", "💜", "💙", "🧡", "💖", "💚", "⭐"];
-        const defaultNames = ["Jaloe", "Benthe", "Marjolein", "Speler 4", "Speler 5", "Speler 6", "Speler 7", "Speler 8"];
-        let players = ["Jaloe", "Benthe", "Marjolein"];
+        const availableEmojis = [
+            "🎀", "🌸", "💜", "💙", "🧡", "💖", "💚", "⭐",
+            "🦊", "🐱", "🐶", "🦄", "🐼", "🐸", "🦋", "🐝",
+            "🌈", "🔥", "⚡", "🌟", "🍀", "🎯", "🎨", "🎵",
+            "🚀", "👑", "💎", "🎮", "🏆", "🎪", "🌺", "🍭",
+            "😎", "🤩", "😈", "👻", "🤖", "👽", "🧙", "🦸"
+        ];
+
+        const availableColors = [
+            { name: "Rood",    colors: ["#ff6b6b", "#ee5a5a"] },
+            { name: "Groen",   colors: ["#4ecdc4", "#44a08d"] },
+            { name: "Paars",   colors: ["#a855f7", "#7c3aed"] },
+            { name: "Blauw",   colors: ["#3b82f6", "#2563eb"] },
+            { name: "Oranje",  colors: ["#f59e0b", "#d97706"] },
+            { name: "Roze",    colors: ["#ec4899", "#db2777"] },
+            { name: "Teal",    colors: ["#14b8a6", "#0d9488"] },
+            { name: "Indigo",  colors: ["#8b5cf6", "#6d28d9"] },
+            { name: "Lime",    colors: ["#84cc16", "#65a30d"] },
+            { name: "Amber",   colors: ["#f97316", "#ea580c"] }
+        ];
+
+        const defaultPlayers = [
+            { name: "Jaloe",     emoji: "🎀", color: 0 },
+            { name: "Benthe",    emoji: "🌸", color: 1 },
+            { name: "Marjolein", emoji: "💜", color: 2 }
+        ];
+
+        let players = [];
         let currentWord = "";
-        let imposter = "";
+        let imposterName = "";
         let checkedPlayers = [];
         let round = 1;
         let activeCategories = [];
         let currentStep = 1;
+        let editingEmojiIndex = -1;
 
         // Load saved players
         function loadPlayers() {
-            const saved = localStorage.getItem('imposterPlayers');
+            const saved = localStorage.getItem('imposterPlayersV2');
             if (saved) {
                 players = JSON.parse(saved);
+            } else {
+                players = defaultPlayers.map(p => ({...p}));
             }
             renderPlayerInputs();
         }
 
         function renderPlayerInputs() {
             const container = document.getElementById('playerInputs');
-            container.innerHTML = players.map((name, i) => `
+            container.innerHTML = players.map((p, i) => `
                 <div class="player-input-row">
-                    <span class="emoji">${emojis[i]}</span>
-                    <input type="text" id="player${i}Name" value="${name}" maxlength="15">
+                    <button class="emoji-btn" onclick="openEmojiPicker(${i})">${p.emoji}</button>
+                    <button class="color-btn" style="background:linear-gradient(135deg,${availableColors[p.color].colors[0]},${availableColors[p.color].colors[1]})" onclick="cycleColor(${i})"></button>
+                    <input type="text" id="player${i}Name" value="${p.name}" maxlength="15">
                 </div>
             `).join('');
             updateControlButtons();
+        }
+
+        function openEmojiPicker(index) {
+            editingEmojiIndex = index;
+            const grid = document.getElementById('emojiGrid');
+            grid.innerHTML = availableEmojis.map(e =>
+                `<button class="emoji-option" onclick="pickEmoji('${e}')">${e}</button>`
+            ).join('');
+            document.getElementById('emojiPicker').classList.add('show');
+        }
+
+        function pickEmoji(emoji) {
+            if (editingEmojiIndex >= 0) {
+                players[editingEmojiIndex].emoji = emoji;
+                renderPlayerInputs();
+            }
+            document.getElementById('emojiPicker').classList.remove('show');
+            editingEmojiIndex = -1;
+        }
+
+        document.getElementById('emojiPicker').addEventListener('click', (e) => {
+            if (e.target.id === 'emojiPicker') {
+                document.getElementById('emojiPicker').classList.remove('show');
+                editingEmojiIndex = -1;
+            }
+        });
+
+        function cycleColor(index) {
+            // Save current input values first
+            saveInputNames();
+            players[index].color = (players[index].color + 1) % availableColors.length;
+            renderPlayerInputs();
+        }
+
+        function saveInputNames() {
+            players.forEach((p, i) => {
+                const input = document.getElementById(`player${i}Name`);
+                if (input) p.name = input.value.trim() || `Speler ${i + 1}`;
+            });
         }
 
         function updateControlButtons() {
@@ -858,31 +1012,41 @@
 
         function addPlayer() {
             if (players.length < 8) {
-                players.push(defaultNames[players.length]);
+                saveInputNames();
+                const usedColors = players.map(p => p.color);
+                let newColor = 0;
+                for (let c = 0; c < availableColors.length; c++) {
+                    if (!usedColors.includes(c)) { newColor = c; break; }
+                }
+                const usedEmojis = players.map(p => p.emoji);
+                let newEmoji = "⭐";
+                for (const e of availableEmojis) {
+                    if (!usedEmojis.includes(e)) { newEmoji = e; break; }
+                }
+                players.push({ name: `Speler ${players.length + 1}`, emoji: newEmoji, color: newColor });
                 renderPlayerInputs();
             }
         }
 
         function removePlayer() {
             if (players.length > 2) {
+                saveInputNames();
                 players.pop();
                 renderPlayerInputs();
             }
         }
 
         function savePlayers() {
-            players = players.map((_, i) => {
-                const input = document.getElementById(`player${i}Name`);
-                return input ? (input.value.trim() || `Speler ${i + 1}`) : `Speler ${i + 1}`;
-            });
-            localStorage.setItem('imposterPlayers', JSON.stringify(players));
+            saveInputNames();
+            localStorage.setItem('imposterPlayersV2', JSON.stringify(players));
         }
 
         function renderPlayerButtons() {
             const container = document.getElementById('playerButtons');
-            container.innerHTML = players.map((name, i) =>
-                `<button class="player-btn p${i+1}" onclick="showCard('${name.replace(/'/g, "\\'")}')">${emojis[i]} ${name}</button>`
-            ).join('');
+            container.innerHTML = players.map((p, i) => {
+                const c = availableColors[p.color].colors;
+                return `<button class="player-btn" style="background:linear-gradient(135deg,${c[0]},${c[1]}); color:white;" onclick="showCard(${i})">${p.emoji} ${p.name}</button>`;
+            }).join('');
         }
 
         // Categories
@@ -1001,7 +1165,8 @@
             const words = getActiveWords();
             if (words.length === 0) return;
             currentWord = words[Math.floor(Math.random() * words.length)];
-            imposter = players[Math.floor(Math.random() * players.length)];
+            const imposterIndex = Math.floor(Math.random() * players.length);
+            imposterName = players[imposterIndex].name;
             checkedPlayers = [];
             updateStatus();
         }
@@ -1011,14 +1176,15 @@
         }
 
         // Game
-        function showCard(player) {
+        function showCard(playerIndex) {
+            const p = players[playerIndex];
             const cardScreen = document.getElementById('cardScreen');
             const playerNameEl = document.getElementById('playerName');
             const cardContent = document.getElementById('cardContent');
 
-            playerNameEl.textContent = player;
+            playerNameEl.textContent = `${p.emoji} ${p.name}`;
 
-            if (player === imposter) {
+            if (p.name === imposterName) {
                 cardContent.textContent = "IMPOSTER";
                 cardContent.className = "card-content imposter";
             } else {
@@ -1028,8 +1194,8 @@
 
             cardScreen.style.display = 'flex';
 
-            if (!checkedPlayers.includes(player)) {
-                checkedPlayers.push(player);
+            if (!checkedPlayers.includes(p.name)) {
+                checkedPlayers.push(p.name);
             }
         }
 
@@ -1040,13 +1206,17 @@
 
         function updateStatus() {
             const status = document.getElementById('status');
+            const names = players.map(p => p.name);
             if (checkedPlayers.length === 0) {
                 status.innerHTML = "Nog niemand heeft gekeken";
             } else if (checkedPlayers.length === players.length) {
                 status.innerHTML = "✅ Iedereen heeft gekeken!<br><strong>Tijd om te discussiëren!</strong>";
             } else {
-                const checked = checkedPlayers.map(p => `<span class="checked">✓ ${p}</span>`).join(", ");
-                const remaining = players.filter(p => !checkedPlayers.includes(p)).join(", ");
+                const checked = checkedPlayers.map(n => {
+                    const p = players.find(pl => pl.name === n);
+                    return `<span class="checked">✓ ${p ? p.emoji : ''} ${n}</span>`;
+                }).join(", ");
+                const remaining = players.filter(p => !checkedPlayers.includes(p.name)).map(p => `${p.emoji} ${p.name}`).join(", ");
                 status.innerHTML = `Gekeken: ${checked}<br>Nog niet: ${remaining}`;
             }
         }
@@ -1057,6 +1227,9 @@
             const nameEl = document.getElementById('revealName');
             const wordEl = document.getElementById('revealWord');
             const nextBtn = document.getElementById('revealNextBtn');
+
+            const imp = players.find(p => p.name === imposterName);
+            const impLabel = imp ? `${imp.emoji} ${imp.name}` : imposterName;
 
             // Reset
             countdown.style.display = 'block';
@@ -1077,7 +1250,7 @@
                 } else {
                     clearInterval(timer);
                     countdown.style.display = 'none';
-                    nameEl.textContent = imposter;
+                    nameEl.textContent = impLabel;
                     nameEl.style.display = 'block';
                     wordEl.textContent = `Het woord was: ${currentWord}`;
                     wordEl.style.display = 'block';
