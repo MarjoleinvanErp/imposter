@@ -442,11 +442,10 @@
             transition: all 0.2s ease;
             font-weight: 600;
             touch-action: manipulation;
-            background: #e5e7eb;
-            color: #1a1a2e;
+            color: white;
         }
 
-        .player-btn:active { transform: scale(0.98); background: #d1d5db; }
+        .player-btn:active { transform: scale(0.98); }
 
         .round-info {
             background: linear-gradient(135deg, #3b82f6, #2563eb);
@@ -571,8 +570,8 @@
 
         /* Starter button */
         .starter-btn {
-            background: linear-gradient(135deg, #8b5cf6, #6d28d9);
-            color: white;
+            background: #e5e7eb;
+            color: #374151;
             padding: 14px 30px;
             font-size: 1.1em;
             border: none;
@@ -585,12 +584,12 @@
             width: 100%;
         }
 
-        .starter-btn:active { transform: scale(0.98); }
+        .starter-btn:active { transform: scale(0.98); background: #d1d5db; }
 
         /* Reveal button */
         .reveal-btn {
-            background: linear-gradient(135deg, #ef4444, #dc2626);
-            color: white;
+            background: #e5e7eb;
+            color: #374151;
             padding: 14px 30px;
             font-size: 1.1em;
             border: none;
@@ -603,7 +602,7 @@
             width: 100%;
         }
 
-        .reveal-btn:active { transform: scale(0.98); }
+        .reveal-btn:active { transform: scale(0.98); background: #d1d5db; }
 
         /* Reveal screen */
         .reveal-countdown {
@@ -1154,9 +1153,10 @@
 
         function renderPlayerButtons() {
             const container = document.getElementById('playerButtons');
-            container.innerHTML = players.map((p, i) =>
-                `<button class="player-btn" onclick="showCard(${i})">${p.emoji} ${p.name}</button>`
-            ).join('');
+            container.innerHTML = players.map((p, i) => {
+                const c = availableColors[p.color].colors;
+                return `<button class="player-btn" style="background:linear-gradient(135deg,${c[0]},${c[1]})" onclick="showCard(${i})">${p.emoji} ${p.name}</button>`;
+            }).join('');
         }
 
         // Categories
@@ -1281,7 +1281,6 @@
             // Reset starter knop
             const starterBtn = document.getElementById('starterBtn');
             starterBtn.textContent = '🎲 Wie begint er?';
-            starterBtn.style.background = 'linear-gradient(135deg, #8b5cf6, #6d28d9)';
             updateStatus();
         }
 
@@ -1346,7 +1345,6 @@
             const starter = players[randomIndex];
             const btn = document.getElementById('starterBtn');
             btn.textContent = `👉 ${starter.emoji} ${starter.name} begint!`;
-            btn.style.background = `linear-gradient(135deg, ${availableColors[starter.color].colors[0]}, ${availableColors[starter.color].colors[1]})`;
         }
 
         function revealImposter() {
