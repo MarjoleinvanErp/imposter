@@ -246,6 +246,7 @@
             display: grid;
             grid-template-columns: repeat(6, 1fr);
             gap: 6px;
+            max-height: 55vh;
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
         }
@@ -295,20 +296,20 @@
 
         .color-grid {
             display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 10px;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
             justify-items: center;
+            padding: 5px;
         }
 
         .color-option {
-            width: 44px;
-            height: 44px;
+            width: 52px;
+            height: 52px;
             border-radius: 50%;
-            border: 3px solid transparent;
+            border: 4px solid transparent;
             cursor: pointer;
             touch-action: manipulation;
-            transition: transform 0.2s, border-color 0.2s;
-            position: relative;
+            transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
         }
 
         .color-option:active { transform: scale(0.9); }
@@ -316,16 +317,7 @@
         .color-option.selected {
             border-color: #1a1a2e;
             transform: scale(1.15);
-        }
-
-        .color-option .color-name {
-            position: absolute;
-            bottom: -16px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 0.6em;
-            color: #6b7280;
-            white-space: nowrap;
+            box-shadow: 0 0 0 2px white, 0 0 0 4px #1a1a2e;
         }
 
         .player-controls {
@@ -992,15 +984,17 @@
 
         const availableColors = [
             { name: "Rood",    colors: ["#ff6b6b", "#ee5a5a"] },
-            { name: "Groen",   colors: ["#4ecdc4", "#44a08d"] },
-            { name: "Paars",   colors: ["#a855f7", "#7c3aed"] },
             { name: "Blauw",   colors: ["#3b82f6", "#2563eb"] },
+            { name: "Groen",   colors: ["#10b981", "#059669"] },
             { name: "Oranje",  colors: ["#f59e0b", "#d97706"] },
+            { name: "Paars",   colors: ["#a855f7", "#7c3aed"] },
             { name: "Roze",    colors: ["#ec4899", "#db2777"] },
-            { name: "Teal",    colors: ["#14b8a6", "#0d9488"] },
-            { name: "Indigo",  colors: ["#8b5cf6", "#6d28d9"] },
+            { name: "Geel",    colors: ["#facc15", "#eab308"] },
+            { name: "Navy",    colors: ["#1e3a5f", "#0f2942"] },
             { name: "Lime",    colors: ["#84cc16", "#65a30d"] },
-            { name: "Amber",   colors: ["#f97316", "#ea580c"] }
+            { name: "Bruin",   colors: ["#a0522d", "#8b4513"] },
+            { name: "Cyan",    colors: ["#06b6d4", "#0891b2"] },
+            { name: "Zwart",   colors: ["#374151", "#1f2937"] }
         ];
 
         const defaultPlayers = [
@@ -1073,9 +1067,7 @@
             const grid = document.getElementById('colorGrid');
             const currentColor = players[index].color;
             grid.innerHTML = availableColors.map((c, i) =>
-                `<button class="color-option${i === currentColor ? ' selected' : ''}" style="background:linear-gradient(135deg,${c.colors[0]},${c.colors[1]})" onclick="pickColor(${i})">
-                    <span class="color-name">${c.name}</span>
-                </button>`
+                `<button class="color-option${i === currentColor ? ' selected' : ''}" style="background:linear-gradient(135deg,${c.colors[0]},${c.colors[1]})" onclick="pickColor(${i})"></button>`
             ).join('');
             document.getElementById('colorPicker').classList.add('show');
         }
